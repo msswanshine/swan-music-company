@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatomy of a Scale | Swan Music Company</title>
+  <meta name="description" content="An interactive guide to scale step patterns and intonation: see and hear how far each note bends from equal temperament in just intonation." />
+  <link rel="icon" type="image/png" href="../images/logo-stacked.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/site.css" />
+  <style>
+    /* Interactive scale tool: styles scoped to .scale-tool so they don't clash with the site */
+    .scale-tool {
+      --st-surface: #ffffff;
+      --st-surface-2: #efe8dc;
+      --st-ink: var(--ink);
+      --st-soft: var(--muted);
+      --st-accent: #8a6420;
+      --st-accent-2: var(--navy);
+      --st-sharp: #8a6420;
+      --st-flat: #3c62a8;
+      --st-on-accent: #fffaf0;
+      --st-line: rgba(30, 42, 53, 0.12);
+      --st-line-strong: rgba(30, 42, 53, 0.32);
+      display: grid;
+      gap: clamp(40px, 6vw, 64px);
+      padding-top: 3.5rem;
+      padding-bottom: 5rem;
+    }
+
+    .scale-tool h2 { margin-bottom: 0; }
+    .scale-tool p { margin: 0; color: var(--st-soft); }
+    .scale-tool .block { display: grid; gap: 18px; }
+    .scale-tool .block > p { max-width: 68ch; }
+
+    .scale-tool .controls {
+      background: var(--st-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3vw, 28px);
+      display: grid;
+      gap: 20px;
+    }
+
+    .scale-tool .pair { display: flex; flex-wrap: wrap; gap: 20px 40px; }
+    .scale-tool fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 10px; }
+    .scale-tool legend {
+      padding: 0;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: var(--st-soft);
+    }
+
+    .scale-tool .key-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .scale-tool .key-btn,
+    .scale-tool .sa-btn,
+    .scale-tool .pbtn {
+      font-family: inherit;
+      font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--st-ink);
+      border: 1px solid var(--st-line-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .scale-tool .key-btn { font-size: 0.95rem; min-width: 46px; padding: 8px 14px; }
+    .scale-tool .sa-btn { font-size: 0.9rem; padding: 10px 18px; }
+    .scale-tool .pbtn { font-size: 0.82rem; padding: 7px 13px; }
+
+    .scale-tool .key-btn:hover,
+    .scale-tool .sa-btn:hover { border-color: var(--st-accent); }
+    .scale-tool .pbtn:hover { background: var(--st-surface-2); }
+
+    .scale-tool .key-btn[aria-pressed="true"],
+    .scale-tool .sa-btn.just {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+    .scale-tool .sa-btn.just:hover { background: var(--brass); border-color: var(--brass); }
+    .scale-tool .pbtn.just { border-color: var(--st-accent); color: var(--st-accent); }
+
+    .scale-tool .hint { font-size: 0.88rem; }
+    .scale-tool .readout { font-size: 0.98rem; max-width: 72ch; }
+    .scale-tool .readout strong { color: var(--st-ink); }
+
+    .scale-tool .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px 24px;
+    }
+    .scale-tool .drone { display: inline-flex; align-items: center; gap: 10px; font-size: 0.95rem; cursor: pointer; }
+    .scale-tool .drone input { width: 18px; height: 18px; accent-color: var(--navy); }
+    .scale-tool .scale-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+    .scale-tool .status { font-size: 0.92rem; min-height: 1.5em; }
+
+    /* Step pattern strip */
+    .scale-tool .strip {
+      overflow-x: auto;
+      background: var(--st-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 8px 4px;
+    }
+    .scale-tool .strip svg { display: block; width: 100%; min-width: 640px; height: auto; }
+    .scale-tool .s-dot { fill: var(--st-surface-2); stroke: var(--navy); stroke-width: 2; }
+    .scale-tool .s-dot.root { fill: var(--navy); stroke: var(--navy); }
+    .scale-tool .s-ghost { fill: none; stroke: var(--st-line-strong); stroke-width: 1.5; }
+    .scale-tool .s-num { font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700; fill: var(--st-ink); text-anchor: middle; }
+    .scale-tool .s-num.root { fill: #fff; }
+    .scale-tool .s-name { font-family: 'Playfair Display', serif; font-size: 18px; fill: var(--st-ink); text-anchor: middle; }
+    .scale-tool .s-semi { font-family: 'Lato', sans-serif; font-size: 12px; fill: var(--st-soft); text-anchor: middle; }
+    .scale-tool .s-brk { fill: none; stroke: var(--st-line-strong); stroke-width: 1.5; }
+    .scale-tool .s-brk.h { stroke: var(--st-accent); }
+    .scale-tool .s-step { font-family: 'Lato', sans-serif; font-size: 15px; font-weight: 700; fill: var(--st-soft); text-anchor: middle; }
+    .scale-tool .s-step.h { fill: var(--st-accent); }
+    .scale-tool .caption { font-size: 0.9rem; }
+
+    /* Bend table */
+    .scale-tool .table {
+      background: var(--st-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 4px clamp(14px, 3vw, 24px);
+      list-style: none;
+      margin: 0;
+    }
+    .scale-tool .note {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1.1fr) minmax(0, 1.5fr) auto;
+      grid-template-areas: "deg who meter plays";
+      gap: 12px 24px;
+      align-items: center;
+      padding: 18px 0;
+      border-top: 1px solid var(--st-line);
+    }
+    .scale-tool .note:first-child { border-top: 0; }
+    .scale-tool .note.head { padding: 14px 0 6px; }
+    .scale-tool .deg {
+      grid-area: deg;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.7rem;
+      line-height: 1;
+      color: var(--brass);
+    }
+    .scale-tool .who { grid-area: who; min-width: 0; display: grid; gap: 2px; }
+    .scale-tool .pitch-line { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .scale-tool .pitch { font-family: 'Playfair Display', serif; font-size: 1.6rem; line-height: 1.1; color: var(--st-ink); }
+    .scale-tool .role { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--st-soft); font-weight: 700; }
+    .scale-tool .sub { font-size: 0.9rem; }
+    .scale-tool .nums { font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+
+    .scale-tool .meter-wrap { grid-area: meter; min-width: 0; display: grid; gap: 6px; }
+    .scale-tool .scale-labels { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--st-soft); font-variant-numeric: tabular-nums; }
+    .scale-tool .meter { position: relative; height: 28px; }
+    .scale-tool .meter .track { position: absolute; left: 0; right: 0; top: 50%; height: 6px; transform: translateY(-50%); background: var(--st-surface-2); border-radius: 3px; }
+    .scale-tool .meter .tick { position: absolute; top: 50%; width: 1px; height: 14px; background: var(--st-line-strong); transform: translate(-50%, -50%); }
+    .scale-tool .meter .tick.mid { height: 24px; background: var(--st-soft); }
+    .scale-tool .meter .fill { position: absolute; top: 50%; height: 6px; transform: translateY(-50%); border-radius: 3px; }
+    .scale-tool .meter .dot { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid var(--st-surface); }
+    .scale-tool .flat .fill, .scale-tool .flat .dot { background: var(--st-flat); }
+    .scale-tool .sharp .fill, .scale-tool .sharp .dot { background: var(--st-sharp); }
+    .scale-tool .zero .dot { background: var(--st-soft); }
+    .scale-tool .amt { font-size: 0.92rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--st-soft); }
+    .scale-tool .amt.flat { color: var(--st-flat); }
+    .scale-tool .amt.sharp { color: var(--st-sharp); }
+    .scale-tool .plays { grid-area: plays; display: flex; gap: 8px; }
+    .scale-tool .legend { font-size: 0.9rem; }
+
+    /* Notes */
+    .scale-tool .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; }
+    .scale-tool .point { display: grid; gap: 10px; align-content: start; border-top: 2px solid var(--brass); padding-top: 14px; }
+    .scale-tool .fine { font-size: 0.88rem; max-width: 68ch; }
+    .scale-tool :focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+    @media (max-width: 720px) {
+      .scale-tool .note {
+        grid-template-columns: 36px minmax(0, 1fr);
+        grid-template-areas: "deg who" "meter meter" "plays plays";
+      }
+      .scale-tool .note.head { display: none; }
+      .scale-tool .deg { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html"><img src="../images/logo-horizontal.png" alt="Swan Music Company" /></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../lessons.html">Lessons</a></li>
+        <li><a href="../swantissimo.html">Swantissimo</a></li>
+        <li><a href="../resources.html" aria-current="page">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow"><a href="../resources.html#theory" style="color: inherit; text-decoration: none;">&larr; Resources</a> &nbsp;/&nbsp; Music theory &middot; Intonation</p>
+      <h1>Anatomy of a scale</h1>
+      <p>Pick a key, choose major or minor, and see the step pattern and how far each note drifts from a piano&rsquo;s pitch when you tune it to the key. Press play to hear the difference.</p>
+    </div>
+  </section>
+
+  <main class="container scale-tool" style="max-width: 1000px;">
+
+    <div class="controls">
+      <div class="pair">
+        <fieldset>
+          <legend>Scale</legend>
+          <div class="key-row" id="modes"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Pitch shown</legend>
+          <div class="key-row" id="pitches"></div>
+        </fieldset>
+      </div>
+      <fieldset>
+        <legend>Key</legend>
+        <div class="key-row" id="keys"></div>
+        <p class="hint">Keys are named in the pitch shown above. F horn music is written a perfect fifth above the sound, so its key signature has one more sharp or one fewer flat than the concert key.</p>
+      </fieldset>
+      <p class="readout" id="readout" aria-live="polite"></p>
+      <div class="control-row">
+        <label class="drone" for="drone">
+          <input type="checkbox" id="drone" checked>
+          Sound the tonic underneath
+        </label>
+        <div class="scale-btns">
+          <button class="sa-btn" type="button" data-scale="equal">Play scale, equal</button>
+          <button class="sa-btn just" type="button" data-scale="just">Play scale, resonant</button>
+        </div>
+      </div>
+      <p class="status" id="status" aria-live="polite">Press any play button to hear a note. Each note uses the same tonic, so the only difference you hear is the tuning.</p>
+    </div>
+
+    <section class="block">
+      <h2>Whole steps and half steps</h2>
+      <p>Every scale follows a recipe of whole and half steps. Major goes whole, whole, half, whole, whole, whole, half. Minor goes whole, half, whole, whole, half, whole, whole. A whole step spans two piano keys and a half step spans one.</p>
+      <p>The minor scale here is Aeolian, also called natural minor. It uses the same notes as its relative major, starting on the major scale&rsquo;s sixth note, which is why one key signature fits both.</p>
+      <div class="strip">
+        <svg id="strip" viewBox="0 0 780 200" role="img" aria-label="Step pattern of the scale"></svg>
+      </div>
+      <p class="caption">W is a whole step (2 semitones). H is a half step (1 semitone). The small numbers count semitones above the tonic.</p>
+    </section>
+
+    <section class="block">
+      <h2>How far each note bends</h2>
+      <p>Equal temperament, the tuning a piano uses, spaces all twelve semitones identically. Resonant tuning, called just intonation in theory books, sets each note so its overtones line up with the tonic&rsquo;s and reinforce each other. Most scale notes then land slightly above or below the equal spots. The unit is the cent, and 100 cents make one piano semitone. Bend amounts depend on major or minor and stay the same in every key, so changing the key signature only renames the notes and changes the pitch you hear.</p>
+      <p class="legend">Bars left of center mean lower the note from the equal-tempered pitch. Bars right of center mean raise it. Each gauge runs from 20 cents flat to 20 cents sharp.</p>
+      <ul class="table" id="notes"></ul>
+    </section>
+
+    <section class="block">
+      <h2>Using the numbers</h2>
+      <div class="points">
+        <div class="point">
+          <h3>Major leans flat, minor leans sharp</h3>
+          <p>In major, the third (13.7 cents), sixth (15.6) and seventh (11.7) sit flat of equal temperament. In minor, the third (15.6), sixth (13.7) and seventh (17.6) sit sharp. The fourth and fifth move only 2 cents in either scale.</p>
+        </div>
+        <div class="point">
+          <h3>The horn&rsquo;s harmonic series shows it</h3>
+          <p>On the horn, the 5th partial sits a major third above the 4th partial in the ratio 5 to 4. The instrument itself resonates in that ratio, so the partial lands about 14 cents flat of equal temperament, the same amount as the major third in the table above.</p>
+        </div>
+        <div class="point">
+          <h3>Match the room</h3>
+          <p>A piano cannot bend, so stay close to equal temperament on long notes when you play with one. Alone over a drone, or with other winds and strings, lean toward the resonant values on sustained thirds and sixths.</p>
+        </div>
+      </div>
+      <p class="fine">Resonant values use five-limit just intonation measured from the tonic and compare against twelve-tone equal temperament. For the minor seventh the page uses 9/5, which matches how the major seventh is built. Some musicians prefer 16/9, which sits about 3.9 cents flat. Real ensembles keep adjusting as the harmony moves, so treat these numbers as a map and trust your ears for the final call.</p>
+    </section>
+
+  </main>
+
+  <section class="section section-warm cta">
+    <div class="container">
+      <h2>Want to work on intonation together?</h2>
+      <div class="divider"></div>
+      <p>Tuning is a listening skill, and it grows fastest with a guide. Lessons are available for students and adults.</p>
+      <div class="btn-row"><a href="../lessons.html" class="btn">See Lessons</a></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <img src="../images/logo-horizontal-white.png" alt="Swan Music Company" />
+        <ul class="footer-links">
+          <li><a href="../lessons.html">Lessons</a></li>
+          <li><a href="../swantissimo.html">Swantissimo</a></li>
+          <li><a href="../resources.html">Resources</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <p class="copyright">&copy; <span data-year>2026</span> Swan Music Company &middot; Rogue Valley, Oregon</p>
+    </div>
+  </footer>
+
+  <script src="../js/site.js"></script>
+  <script>
+  (function () {
+    var MODES = {
+      major: {
+        degrees: [
+          { n: 1, role: 'Tonic',        sol: 'Do',  iv: 'unison',      ratio: [1, 1],  semi: 0 },
+          { n: 2, role: 'Supertonic',   sol: 'Re',  iv: 'major 2nd',   ratio: [9, 8],  semi: 2 },
+          { n: 3, role: 'Mediant',      sol: 'Mi',  iv: 'major 3rd',   ratio: [5, 4],  semi: 4 },
+          { n: 4, role: 'Subdominant',  sol: 'Fa',  iv: 'perfect 4th', ratio: [4, 3],  semi: 5 },
+          { n: 5, role: 'Dominant',     sol: 'Sol', iv: 'perfect 5th', ratio: [3, 2],  semi: 7 },
+          { n: 6, role: 'Submediant',   sol: 'La',  iv: 'major 6th',   ratio: [5, 3],  semi: 9 },
+          { n: 7, role: 'Leading tone', sol: 'Ti',  iv: 'major 7th',   ratio: [15, 8], semi: 11 }
+        ]
+      },
+      minor: {
+        degrees: [
+          { n: 1, role: 'Tonic',        sol: 'Do',  iv: 'unison',      ratio: [1, 1],  semi: 0 },
+          { n: 2, role: 'Supertonic',   sol: 'Re',  iv: 'major 2nd',   ratio: [9, 8],  semi: 2 },
+          { n: 3, role: 'Mediant',      sol: 'Me',  iv: 'minor 3rd',   ratio: [6, 5],  semi: 3 },
+          { n: 4, role: 'Subdominant',  sol: 'Fa',  iv: 'perfect 4th', ratio: [4, 3],  semi: 5 },
+          { n: 5, role: 'Dominant',     sol: 'Sol', iv: 'perfect 5th', ratio: [3, 2],  semi: 7 },
+          { n: 6, role: 'Submediant',   sol: 'Le',  iv: 'minor 6th',   ratio: [8, 5],  semi: 8 },
+          { n: 7, role: 'Subtonic',     sol: 'Te',  iv: 'minor 7th',   ratio: [9, 5],  semi: 10 }
+        ]
+      }
+    };
+    var OCT = { n: 8, semi: 12, ratio: [2, 1] };
+
+    var FLAT = '♭', SHARP = '♯';
+    var LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    var BASE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    var SHARP_ORDER = ['F', 'C', 'G', 'D', 'A', 'E', 'B'];
+    var FLAT_ORDER = ['B', 'E', 'A', 'D', 'G', 'C', 'F'];
+    var SHARP_TONICS = ['C', 'G', 'D', 'A', 'E', 'B', 'F', 'C'];
+    var FLAT_TONICS = ['C', 'F', 'B', 'E', 'A', 'D', 'G', 'C'];
+    var PC_NAMES = ['C', 'D' + FLAT, 'D', 'E' + FLAT, 'E', 'F', 'G' + FLAT, 'G', 'A' + FLAT, 'A', 'B' + FLAT, 'B'];
+
+    // Key picker: tonic pitch class (0 = C) mapped to its key signature, per scale.
+    var MAJOR_LABELS = ['C', 'D' + FLAT, 'D', 'E' + FLAT, 'E', 'F', 'F' + SHARP, 'G', 'A' + FLAT, 'A', 'B' + FLAT, 'B'];
+    var MINOR_LABELS = ['C', 'C' + SHARP, 'D', 'E' + FLAT, 'E', 'F', 'F' + SHARP, 'G', 'G' + SHARP, 'A', 'B' + FLAT, 'B'];
+    var MAJOR_SIG = [0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5];
+    var MINOR_SIG = [-3, 4, -1, -6, 1, -4, 3, -2, 5, 0, -5, 2];
+
+    var sig = 0, tonicPc = 0, mode = 'major', fHorn = false;
+    var K = null, DEG = null, CNAMES = null;
+    var $ = function (id) { return document.getElementById(id); };
+
+    function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+    function sigLabel(n) {
+      if (n === 0) return 'No sharps or flats';
+      return n > 0 ? plural(n, 'sharp') : plural(-n, 'flat');
+    }
+
+    // Spell the scale for a key signature, starting on the major or minor tonic.
+    function buildKey(s, m) {
+      var acc = {}, i;
+      for (i = 0; i < s; i++) acc[SHARP_ORDER[i]] = 1;
+      for (i = 0; i < -s; i++) acc[FLAT_ORDER[i]] = -1;
+      var majLetter = s >= 0 ? SHARP_TONICS[s] : FLAT_TONICS[-s];
+      var majIdx = LETTERS.indexOf(majLetter);
+      var minIdx = (majIdx + 5) % 7;
+      var start = m === 'major' ? majIdx : minIdx;
+      function nm(letter) {
+        var a = acc[letter] || 0;
+        return letter + (a === 1 ? SHARP : (a === -1 ? FLAT : ''));
+      }
+      var names = [], shared = [];
+      for (i = 0; i < 7; i++) {
+        names.push(nm(LETTERS[(start + i) % 7]));
+        shared.push(nm(LETTERS[(majIdx + i) % 7]));
+      }
+      var tl = LETTERS[start];
+      var pc = (((BASE[tl] + (acc[tl] || 0)) % 12) + 12) % 12;
+      return { names: names, shared: shared, pc: pc, majorTonic: nm(majLetter), minorTonic: nm(LETTERS[minIdx]) };
+    }
+
+    function refresh() {
+      sig = (mode === 'major' ? MAJOR_SIG : MINOR_SIG)[tonicPc];
+      K = buildKey(sig, mode);
+      DEG = MODES[mode].degrees;
+      K.soundPc = fHorn ? (K.pc + 5) % 12 : K.pc;
+      K.soundMidi = 55 + ((K.soundPc - 7 + 12) % 12);
+      if (fHorn) {
+        if (sig - 1 >= -7) {
+          CNAMES = buildKey(sig - 1, mode).names;
+        } else {
+          CNAMES = DEG.map(function (d) { return PC_NAMES[(K.soundPc + d.semi) % 12]; });
+        }
+      } else {
+        CNAMES = K.names;
+      }
+    }
+
+    function tonicHz() { return 440 * Math.pow(2, (K.soundMidi - 69) / 12); }
+    function justCents(d) { return 1200 * Math.log(d.ratio[0] / d.ratio[1]) / Math.LN2; }
+    function bendOf(d) { return justCents(d) - d.semi * 100; }
+    function hzFor(d, m) {
+      return m === 'just'
+        ? tonicHz() * d.ratio[0] / d.ratio[1]
+        : tonicHz() * Math.pow(2, d.semi / 12);
+    }
+    function describe(b) {
+      var a = Math.abs(b);
+      if (a < 0.05) return '0¢, the reference';
+      return a.toFixed(1) + '¢ ' + (b < 0 ? 'flat' : 'sharp');
+    }
+    function cls(b) { return Math.abs(b) < 0.05 ? 'zero' : (b < 0 ? 'flat' : 'sharp'); }
+    function fullName(i) {
+      return K.names[i] + (fHorn ? ' (sounds as concert ' + CNAMES[i] + ')' : '');
+    }
+
+    // ---------- rendering ----------
+
+    function renderControls() {
+      var h = '', p;
+      for (p = 0; p < 12; p++) {
+        h += '<button class="key-btn" type="button" data-pc="' + p + '" aria-pressed="false"></button>';
+      }
+      $('keys').innerHTML = h;
+      $('modes').innerHTML =
+        '<button class="key-btn" type="button" data-kind="major" aria-pressed="false">Major</button>' +
+        '<button class="key-btn" type="button" data-kind="minor" aria-pressed="false">Minor (Aeolian)</button>';
+      $('pitches').innerHTML =
+        '<button class="key-btn" type="button" data-pitch="concert" aria-pressed="false">Concert pitch</button>' +
+        '<button class="key-btn" type="button" data-pitch="horn" aria-pressed="false">F horn</button>';
+    }
+
+    function syncControls() {
+      var i, els;
+      var labels = mode === 'major' ? MAJOR_LABELS : MINOR_LABELS;
+      els = $('keys').children;
+      for (i = 0; i < els.length; i++) {
+        var p = parseInt(els[i].getAttribute('data-pc'), 10);
+        els[i].textContent = labels[p];
+        els[i].setAttribute('aria-pressed', p === tonicPc ? 'true' : 'false');
+      }
+      els = $('modes').children;
+      for (i = 0; i < els.length; i++) {
+        els[i].setAttribute('aria-pressed', els[i].getAttribute('data-kind') === mode ? 'true' : 'false');
+      }
+      els = $('pitches').children;
+      for (i = 0; i < els.length; i++) {
+        var isHorn = els[i].getAttribute('data-pitch') === 'horn';
+        els[i].setAttribute('aria-pressed', isHorn === fHorn ? 'true' : 'false');
+      }
+    }
+
+    function renderReadout() {
+      var h = '<strong>' + sigLabel(sig) + '</strong>' + (fHorn ? ' as written for F horn' : '') +
+        ' · ' + K.majorTonic + ' major and ' + K.minorTonic + ' minor share the same notes: ' +
+        K.shared.join(' ') + '. Showing <strong>' + K.names[0] + ' ' + mode + '</strong>';
+      if (fHorn) h += ', which sounds as <strong>concert ' + CNAMES[0] + ' ' + mode + '</strong>';
+      $('readout').innerHTML = h + '.';
+    }
+
+    function renderStrip() {
+      var X = function (s) { return 40 + s * 700 / 12; };
+      var semis = DEG.map(function (d) { return d.semi; }).concat(12);
+      var out = '', steps = [], i, a, b, x1, x2, whole;
+
+      for (i = 0; i < 7; i++) {
+        a = semis[i]; b = semis[i + 1];
+        whole = (b - a) === 2;
+        steps.push(whole ? 'whole' : 'half');
+        x1 = X(a) + 5; x2 = X(b) - 5;
+        out += '<path class="s-brk' + (whole ? '' : ' h') + '" d="M' + x1 + ' 84 V70 H' + x2 + ' V84"/>';
+        out += '<text class="s-step' + (whole ? '' : ' h') + '" x="' + ((x1 + x2) / 2) + '" y="58">' + (whole ? 'W' : 'H') + '</text>';
+      }
+
+      for (var s = 0; s <= 12; s++) {
+        var idx = semis.indexOf(s);
+        var x = X(s);
+        if (idx === -1) {
+          out += '<circle class="s-ghost" cx="' + x + '" cy="116" r="6"/>';
+        } else {
+          var root = idx === 0 || idx === 7;
+          out += '<circle class="s-dot' + (root ? ' root' : '') + '" cx="' + x + '" cy="116" r="21"/>';
+          out += '<text class="s-num' + (root ? ' root' : '') + '" x="' + x + '" y="121">' + (idx + 1) + '</text>';
+          out += '<text class="s-name" x="' + x + '" y="166">' + K.names[idx % 7] + '</text>';
+          out += '<text class="s-semi" x="' + x + '" y="186">' + s + '</text>';
+        }
+      }
+      var svg = $('strip');
+      svg.innerHTML = out;
+      svg.setAttribute('aria-label', 'Step pattern of the ' + K.names[0] + ' ' + mode + ' scale: ' + steps.join(', '));
+    }
+
+    var PLAY_ICON = '<svg viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M2 1l7 4-7 4z" fill="currentColor"/></svg>';
+
+    function renderNotes() {
+      var h = '<li class="note head" aria-hidden="true"><span></span><span></span>' +
+        '<div class="meter-wrap"><div class="scale-labels"><span>20¢ flat</span><span>0</span><span>20¢ sharp</span></div></div><span></span></li>';
+
+      DEG.forEach(function (d, i) {
+        var bd = bendOf(d);
+        var c = cls(bd);
+        var pos = 50 + bd / 20 * 50;
+        var name = K.names[i];
+        var fill = '';
+        if (c === 'flat') fill = '<span class="fill" style="left:' + pos + '%;width:' + (50 - pos) + '%"></span>';
+        if (c === 'sharp') fill = '<span class="fill" style="left:50%;width:' + (pos - 50) + '%"></span>';
+
+        var j = justCents(d);
+        var detail = i === 0
+          ? 'Ratio 1/1, the reference'
+          : 'Ratio ' + d.ratio[0] + '/' + d.ratio[1] + ' · ' + j.toFixed(1) + '¢ vs ' + (d.semi * 100) + '¢';
+        var sounds = fHorn ? '<p class="sub">Sounds as concert ' + CNAMES[i] + '</p>' : '';
+
+        h += '<li class="note">' +
+          '<div class="deg">' + d.n + '</div>' +
+          '<div class="who">' +
+            '<div class="pitch-line"><span class="pitch">' + name + '</span><span class="role">' + d.role + '</span></div>' +
+            '<p class="sub">' + d.sol + ' · ' + d.iv + '</p>' +
+            sounds +
+            '<p class="nums">' + detail + '</p>' +
+          '</div>' +
+          '<div class="meter-wrap ' + c + '">' +
+            '<div class="meter" role="img" aria-label="' + name + ' in resonant tuning sits ' + describe(bd) + ' of equal temperament">' +
+              '<span class="track"></span>' +
+              '<span class="tick" style="left:0%"></span><span class="tick" style="left:25%"></span>' +
+              '<span class="tick mid" style="left:50%"></span>' +
+              '<span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span>' +
+              fill +
+              '<span class="dot" style="left:' + pos + '%"></span>' +
+            '</div>' +
+            '<p class="amt ' + c + '">' + describe(bd) + '</p>' +
+          '</div>' +
+          '<div class="plays">' +
+            '<button class="pbtn" type="button" data-deg="' + i + '" data-mode="equal" aria-label="Play ' + name + ' in equal temperament">' + PLAY_ICON + 'Equal</button>' +
+            '<button class="pbtn just" type="button" data-deg="' + i + '" data-mode="just" aria-label="Play ' + name + ' in resonant tuning">' + PLAY_ICON + 'Resonant</button>' +
+          '</div>' +
+        '</li>';
+      });
+      $('notes').innerHTML = h;
+    }
+
+    function renderAll() {
+      refresh();
+      syncControls();
+      renderReadout();
+      renderStrip();
+      renderNotes();
+    }
+
+    // ---------- audio ----------
+
+    var ctx = null, master = null;
+
+    function audio() {
+      if (!ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        try { ctx = new AC(); } catch (e) { return null; }
+      }
+      if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+      return ctx;
+    }
+
+    function freshMaster() {
+      var now = ctx.currentTime;
+      if (master) {
+        try {
+          master.gain.cancelScheduledValues(now);
+          master.gain.setValueAtTime(master.gain.value, now);
+          master.gain.linearRampToValueAtTime(0, now + 0.06);
+        } catch (e) {}
+      }
+      master = ctx.createGain();
+      master.gain.value = 1;
+      master.connect(ctx.destination);
+      return master;
+    }
+
+    function voice(out, freq, start, dur, vol, cut) {
+      var o = ctx.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.value = freq;
+      var f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = cut;
+      f.Q.value = 0.6;
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.linearRampToValueAtTime(vol, start + 0.05);
+      g.gain.setValueAtTime(vol, start + Math.max(0.06, dur - 0.12));
+      g.gain.linearRampToValueAtTime(0.0001, start + dur);
+      o.connect(f); f.connect(g); g.connect(out);
+      o.start(start);
+      o.stop(start + dur + 0.05);
+    }
+
+    function play(items, withDrone) {
+      var c = audio();
+      if (!c) { setStatus('Sound is not available in this browser.'); return false; }
+      var out = freshMaster();
+      var t0 = c.currentTime + 0.05;
+      var end = 0;
+      items.forEach(function (it) {
+        voice(out, it.hz, t0 + it.at, it.dur, 0.15, Math.min(3200, it.hz * 6));
+        end = Math.max(end, it.at + it.dur);
+      });
+      if (withDrone) voice(out, tonicHz() / 2, t0, end, 0.12, 1400);
+      return true;
+    }
+
+    function setStatus(t) { $('status').textContent = t; }
+
+    function playNote(i, m) {
+      var d = DEG[i];
+      var ok = play([{ hz: hzFor(d, m), at: 0, dur: 2 }], $('drone').checked);
+      if (!ok) return;
+      if (m === 'just') {
+        var bd = bendOf(d);
+        setStatus('Playing ' + fullName(i) + ' in resonant tuning (just intonation), ratio ' + d.ratio[0] + '/' + d.ratio[1] +
+          (Math.abs(bd) < 0.05 ? '.' : ', ' + describe(bd) + ' of equal temperament.'));
+      } else {
+        setStatus('Playing ' + fullName(i) + ' in equal temperament.');
+      }
+    }
+
+    function playScale(m) {
+      var items = [];
+      for (var i = 0; i < 8; i++) {
+        var d = i < 7 ? DEG[i] : OCT;
+        items.push({ hz: hzFor(d, m), at: i * 0.8, dur: i === 7 ? 1.8 : 0.76 });
+      }
+      var ok = play(items, $('drone').checked);
+      if (ok) {
+        setStatus('Playing the ' + K.names[0] + ' ' + mode + ' scale' +
+          (fHorn ? ' (concert ' + CNAMES[0] + ')' : '') + ' in ' +
+          (m === 'just' ? 'resonant tuning.' : 'equal temperament.'));
+      }
+    }
+
+    // ---------- events (only buttons inside the tool) ----------
+
+    document.querySelector('.scale-tool').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('button') : null;
+      if (!b) return;
+      var v;
+      if ((v = b.getAttribute('data-pc')) !== null) {
+        tonicPc = parseInt(v, 10);
+        renderAll();
+        setStatus('Showing ' + K.names[0] + ' ' + mode + ' (' + sigLabel(sig).toLowerCase() + ')' + (fHorn ? ' for F horn.' : ' at concert pitch.'));
+      } else if ((v = b.getAttribute('data-kind')) !== null) {
+        mode = v;
+        renderAll();
+        setStatus('Showing ' + K.names[0] + ' ' + mode + '. Its thirds, sixths and sevenths bend differently from the ' + (mode === 'major' ? 'minor' : 'major') + ' scale.');
+      } else if ((v = b.getAttribute('data-pitch')) !== null) {
+        fHorn = v === 'horn';
+        renderAll();
+        setStatus(fHorn
+          ? 'Showing written F horn pitch. It sounds a perfect fifth lower, and the sound you hear is the concert pitch.'
+          : 'Showing concert pitch, the notes as they sound.');
+      } else if (b.getAttribute('data-deg') !== null) {
+        playNote(parseInt(b.getAttribute('data-deg'), 10), b.getAttribute('data-mode'));
+      } else if (b.getAttribute('data-scale') !== null) {
+        playScale(b.getAttribute('data-scale'));
+      }
+    });
+
+    renderControls();
+    renderAll();
+  })();
+  </script>
+</body>
+</html>
