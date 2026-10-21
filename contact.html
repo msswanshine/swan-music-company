@@ -38,12 +38,11 @@
   <section class="section">
     <div class="container grid-2" style="align-items: start;">
       <div>
-        <!--
-          SETUP: This form uses Formspree (free) to email you each message.
-          1. Sign up at https://formspree.io and create a form.
-          2. Replace YOUR_FORM_ID below with the ID Formspree gives you.
-        -->
-        <form class="form" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <form class="form" id="contact-form" action="https://formsubmit.co/play@swanmusiccompany.com" method="POST">
+          <input type="hidden" name="_subject" value="New message from the Swan Music Company website" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="box" />
+          <input type="text" name="_gotcha" style="display: none;" tabindex="-1" autocomplete="off" />
           <div class="form-row">
             <div>
               <label for="name">Name</label>
@@ -130,10 +129,6 @@
     const status = document.getElementById('form-status');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (form.action.includes('YOUR_FORM_ID')) {
-        status.textContent = 'This form isn’t connected yet. Please check back soon.';
-        return;
-      }
       status.textContent = 'Sending…';
       try {
         const res = await fetch(form.action, {
