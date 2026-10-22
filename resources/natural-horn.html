@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Horn With No Buttons | Swan Music Company</title>
+  <meta name="description" content="An interactive tour of the natural horn: its history, how crooks change its key, the overtone series, and hand horn in a Mozart concerto." />
+  <link rel="icon" type="image/png" href="../images/logo-stacked.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Noto+Music&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/site.css" />
+  <style>
+    /* Natural horn page: component styles layered on site.css */
+    :root {
+      --brass-deep: #8a6420;
+      --wobble: #a2462c;
+      --white: #ffffff;
+      --on-dark: #d9d2c6;
+      --on-dark-head: #f5efe5;
+      --display: 'Playfair Display', Georgia, serif;
+      --body: 'Lato', system-ui, sans-serif;
+    }
+    .horn-page p:not(.eyebrow) { margin-bottom: 0; }
+    .horn-page button { font: inherit; cursor: pointer; }
+    .horn-page :focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+    .horn-hero { background: var(--paper-warm); border-bottom: 1px solid var(--line); padding: 4rem 0 3.5rem; }
+    .horn-hero h1 { font-weight: 400; font-style: italic; }
+    .horn-hero .eyebrow a { color: inherit; text-decoration: none; }
+    .prose { max-width: 68ch; display: flex; flex-direction: column; gap: 1rem; }
+    .section-dark .section-head p { color: var(--on-dark); }
+    .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:center}
+.hero-grid > *{min-width:0}
+.hero-text{display:flex;flex-direction:column;gap:1rem}
+.hero-text p:not(.eyebrow):not(.lead){color:var(--muted);font-size:1.1rem}
+.hero-art{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem}
+.hero-art svg{width:100%;height:auto}
+    /* Horn drawing */
+.tube{fill:none;stroke:var(--brass);stroke-linecap:round}
+.tube-hi{fill:none;stroke:var(--brass-light);stroke-linecap:round;opacity:.8}
+.bell{fill:var(--brass);stroke:var(--brass-deep);stroke-linejoin:round}
+.bell-body{stroke:var(--brass-deep);stroke-width:1.5;stroke-linejoin:round}
+.bell-mouth{stroke:var(--brass-light);stroke-width:5}
+.stay{stroke:var(--brass);stroke-width:3}
+.joint{fill:var(--brass-deep)}
+.callout{stroke:var(--muted);stroke-width:1.2}
+.callout-dot{fill:var(--muted)}
+.crook .tube{stroke:var(--navy)}
+.label-svg{font-family:var(--body);font-size:13px;fill:var(--muted)}
+.crook-tag{font-family:var(--display);font-style:italic;font-size:16px;fill:var(--navy)}
+
+/* Timeline */
+.timeline{list-style:none;margin:0 auto;padding:0;max-width:760px;display:flex;flex-direction:column}
+.timeline li{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:1.5rem;padding-block:1.5rem;border-top:1px solid var(--line)}
+.timeline li:last-child{border-bottom:1px solid var(--line)}
+.year{font-family:var(--display);font-style:italic;font-size:1.5rem;color:var(--brass);line-height:1.2}
+.timeline .body{display:flex;flex-direction:column;gap:.35rem}
+.timeline .body p{color:var(--muted)}
+
+/* Cards / tools */
+.tool{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:center}
+.tool > *{min-width:0}
+.side{display:flex;flex-direction:column;gap:1.25rem}
+.legend{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-weight:700;font-size:.95rem;min-width:46px;padding:8px 14px;border-radius:999px;background:transparent;color:var(--ink);border:1px solid rgba(30,42,53,.32)}
+.chip:hover{border-color:var(--brass-deep)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.75rem 1.25rem;margin:0;padding-block:1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:var(--muted);padding-top:.45rem}
+.facts dd{margin:0}
+.big{font-family:var(--display);font-size:1.9rem;color:var(--ink);line-height:1.15}
+.note{font-size:.92rem;color:var(--muted)}
+
+
+/* Jump ropes */
+.ropes{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:2rem}
+.ropes svg{width:100%;height:auto}
+.ropes path{fill:none;stroke:var(--brass-light);stroke-width:4;stroke-linecap:round}
+.ropes .hand{fill:var(--brass)}
+.rope-rows{display:flex;flex-direction:column;gap:.75rem}
+.rope-row{display:grid;grid-template-columns:14rem minmax(0,1fr);gap:1rem;align-items:center}
+.rope-btn{padding:.6rem 1rem;font-size:.72rem;white-space:nowrap}
+.rope-left{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+.rope-info{font-family:var(--display);font-style:italic;color:var(--brass-light);font-size:.95rem}
+.rope-btn.active{background:var(--brass-light);color:var(--navy)}
+.rope-cap{text-align:center;color:var(--on-dark);font-size:.95rem}
+.ropes .btn-row{justify-content:center}
+
+/* Ladder */
+.ladder-tool{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);align-items:start}
+.ladder{position:relative;height:540px;border-left:6px solid var(--brass);border-right:6px solid var(--brass);margin:0 .5rem}
+.rung{position:absolute;left:0;right:0;height:0;transform:translateY(50%);display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;border:none;border-top:3px solid var(--navy);background:transparent;color:var(--ink)}
+.rung span{background:var(--white);padding:0 6px;line-height:1.2;transform:translateY(-2px);font-variant-numeric:tabular-nums}
+.rung .num{font-family:var(--display);font-style:italic;font-size:1.1rem;color:var(--brass-deep)}
+.rung .nm{font-size:.88rem;font-weight:700}
+.rung.wobbly{border-top-style:dashed;border-top-color:var(--wobble)}
+.rung.wobbly .nm{color:var(--wobble)}
+.rung.playing{border-top-color:var(--brass);border-top-width:5px}
+.rung:hover span,.rung:focus-visible span{background:var(--paper-warm)}
+.key{display:flex;flex-wrap:wrap;gap:1.25rem;font-size:.9rem;color:var(--muted)}
+.key i{display:inline-block;width:28px;border-top:3px solid var(--navy);vertical-align:middle;margin-right:6px}
+.key i.w{border-top:3px dashed var(--wobble)}
+
+/* Points */
+.points{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.75rem}
+.point{border-top:2px solid var(--brass);padding-top:.9rem;display:flex;flex-direction:column;gap:.5rem}
+.point p{color:var(--muted)}
+
+/* Hand */
+.hand-tool{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+
+/* Mozart excerpt */
+.excerpt{display:flex;flex-direction:column;gap:1.25rem;margin-top:1.75rem}
+.excerpt > p{max-width:68ch}
+.staff-wrap{overflow-x:auto}
+#mozStaff{display:block;width:100%;min-width:620px;height:auto}
+.staff-line{stroke:var(--muted);stroke-width:1}
+.bar-line{stroke:var(--ink);stroke-width:1.3}
+.ledger{stroke:var(--ink);stroke-width:1.3}
+.clef{font-family:"Noto Music","Apple Symbols","Segoe UI Symbol",serif;fill:var(--ink)}
+.timesig{font-family:var(--display);font-weight:700;font-size:25px;fill:var(--ink);text-anchor:middle}
+.head{fill:var(--ink)}
+.stem{stroke:var(--ink);stroke-width:1.4}
+.beam{fill:var(--ink)}
+.flag,.rest-mark,.flat{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.rest-dot{fill:var(--ink)}
+.halo{fill:var(--brass-light);opacity:0}
+.hl{fill:var(--navy);opacity:0;transition:opacity .08s}
+.ltr{font-family:var(--body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.mz-note.hand .halo{opacity:1}
+.mz-note.hand .head{fill:var(--brass-deep)}
+.mz-note.hand .ltr{fill:var(--brass-deep);font-weight:700}
+.mz-note.playing .hl{opacity:.12}
+.mz-note.playing .head{fill:var(--navy)}
+.hand-key{background:var(--brass-light);padding:0 .35em;border-radius:3px;font-weight:700}
+
+/* Quiz */
+.quiz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.75rem}
+.q{display:flex;flex-direction:column;gap:1rem;padding:1.75rem}
+.q h3{font-size:1.2rem}
+.q .opts{display:flex;flex-direction:column;gap:8px}
+.q .opts button{text-align:left;border:1px solid var(--line);background:var(--paper);color:var(--text);border-radius:4px;padding:.65rem 1rem}
+.q .opts button:hover{border-color:var(--brass)}
+.q .opts button.right{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.q .opts button.wrong{color:var(--wobble);border-color:var(--wobble);text-decoration:line-through}
+.q .fb{font-size:.95rem;color:var(--muted);min-height:1.6em}
+.score{font-family:var(--display);font-style:italic;font-size:1.5rem;color:var(--brass-deep);text-align:center}
+    @media (max-width: 880px) {
+      .hero-grid, .tool, .ladder-tool, .hand-tool, .quiz { grid-template-columns: 1fr; gap: 2rem; }
+      .ladder { height: 480px; }
+    }
+    @media (max-width: 560px) {
+      .timeline li { grid-template-columns: 1fr; gap: .25rem; }
+      .rope-row { grid-template-columns: 1fr; gap: .25rem; }
+      .rope-btn { justify-self: start; }
+      .card { padding: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .horn-page * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html"><img src="../images/logo-horizontal.png" alt="Swan Music Company" /></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../lessons.html">Lessons</a></li>
+        <li><a href="../swantissimo.html">Swantissimo</a></li>
+        <li><a href="../resources.html" aria-current="page">Resources</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="horn-page">
+  <!-- HERO -->
+  <section class="horn-hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <p class="eyebrow"><a href="../resources.html#theory">&larr; Resources</a> &nbsp;/&nbsp; Music theory &middot; Horn history</p>
+        <h1>The horn with no buttons</h1>
+        <p class="lead">Before horns had valves, a horn was one very long brass tube wrapped into a circle.</p>
+        <p>No keys. No buttons. Players made every note with their lips, their ears, and one clever hand. This is the <strong>natural horn</strong>. Let's find out how it worked, and why its notes follow a secret pattern called the <strong>overtone series</strong>.</p>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 460 470" role="img" aria-label="Labeled drawing of a natural horn: the large main hoop called the corpus, a smaller crook loop joined at the top, the mouthpiece on the right, and the bell flaring out at the bottom">
+          <g id="heroHorn"></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">How it happened</p>
+        <h2>From the forest to the orchestra</h2>
+        <div class="divider"></div>
+      </div>
+      <ol class="timeline">
+        <li><span class="year">1600s</span><div class="body"><h3>Horns for hunting</h3><p>In France, hunters rode through the woods blowing big round horns to signal each other. The tube was coiled into a hoop so a rider could wear it over one shoulder.</p></div></li>
+        <li><span class="year">Early 1700s</span><div class="body"><h3>Into the orchestra</h3><p>Composers loved that bold outdoor sound and started adding horns to orchestras. There was one big problem: each horn could only play the notes of <em>one</em> key.</p></div></li>
+        <li><span class="year">1700s</span><div class="body"><h3>Crooks to the rescue</h3><p>Instrument makers invented <strong>crooks</strong>: extra loops of tubing you could slide in and out. A longer crook makes a lower key. A shorter crook makes a higher key. Horn players carried a whole bag of them!</p></div></li>
+        <li><span class="year">About 1750</span><div class="body"><h3>The hand trick</h3><p>A horn player in Dresden named Anton Hampel figured out that moving your hand inside the bell could bend notes and fill in the gaps. This became known as <strong>hand horn</strong> playing.</p></div></li>
+        <li><span class="year">1780s</span><div class="body"><h3>Mozart's horn concertos</h3><p>Mozart wrote four horn concertos for his friend Joseph Leutgeb, who played a natural horn with crooks and his hand in the bell. Mozart even scribbled jokes to him in the music.</p></div></li>
+        <li><span class="year">1814–1818</span><div class="body"><h3>Valves arrive</h3><p>Heinrich Stölzel and Friedrich Blühmel invented valves. Pressing a valve instantly adds extra tubing, like swapping a crook in a split second. Over the next hundred years, valve horns took over.</p></div></li>
+        <li><span class="year">Today</span><div class="body"><h3>Still played!</h3><p>Natural horns are still played by musicians who want Mozart and Beethoven to sound the way those composers first heard it.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CROOK SWAPPER -->
+  <section class="section section-warm">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Try it yourself</p>
+        <h2>The crook swapper</h2>
+        <div class="divider"></div>
+        <p>Pick a crook. Watch the navy loop change size, and see how long the whole horn becomes. <strong>More tube means lower notes.</strong></p>
+      </div>
+      <div class="card tool">
+        <svg viewBox="0 0 460 470" role="img" aria-label="Natural horn with the selected crook shown in navy" style="width:100%;height:auto">
+          <g id="machineHorn"></g>
+        </svg>
+        <div class="side">
+          <div>
+            <p class="legend">Choose a crook</p>
+            <div class="chips" role="group" aria-label="Choose a crook" id="crookButtons"></div>
+          </div>
+          <dl class="facts">
+            <dt>Key</dt><dd class="big" id="cKey">F</dd>
+            <dt>Tube</dt><dd><span class="big" id="cLen">12 ft</span><br><span id="cCompare" class="note"></span></dd>
+            <dt>Heard in</dt><dd id="cMusic"></dd>
+          </dl>
+          <div class="btn-row"><button class="btn" id="playCall" type="button">Play a hunting call</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIG IDEA -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The big idea</p>
+        <h2>Why can a tube only play certain notes?</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="ropes">
+        <div class="prose" style="margin:0 auto">
+          <p>Imagine you and a friend shaking a jump rope. You can make it swing in <strong>one</strong> big hump. Shake faster and it makes <strong>two</strong> humps, then <strong>three</strong>, then <strong>four</strong>. You can't make two-and-a-half humps!</p>
+          <p>The air inside a horn works the same way. When you buzz your lips faster, the air wiggles in more "humps," and you get a higher note. Each step up is called an <strong>overtone</strong> (or <strong>harmonic</strong>). The list of them, in order, is the <strong>overtone series</strong>.</p>
+        </div>
+        <div class="rope-rows" id="ropes"></div>
+        <div class="btn-row"><button class="btn btn-light" id="wiggleAll" type="button">Wiggle them all</button></div>
+        <p class="rope-cap">Watch closely: more humps wiggle faster. Faster wiggles make higher notes. Each button plays that overtone on the crook you picked: the fundamental, then up an octave, a fifth, another octave, and a major third. Wiggle them all and you'll hear a major chord.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LADDER -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Climb it</p>
+        <h2>The overtone ladder</h2>
+        <div class="divider"></div>
+        <p>Here are the first 16 overtones of your horn. The rungs are spaced by how high they sound. <strong>Tap any rung to hear it.</strong></p>
+      </div>
+      <div class="card tool ladder-tool">
+        <div class="ladder" id="ladder" aria-label="Overtone ladder, lowest at the bottom"></div>
+        <div class="side">
+          <p>Using the <strong id="lKey">F</strong> crook. Change crooks in the crook swapper and the whole ladder slides up or down. The <em>pattern</em> of gaps never changes.</p>
+          <div class="btn-row">
+            <button class="btn" id="climb" type="button">Climb the ladder</button>
+            <button class="btn btn-outline" id="topScale" type="button">Play the top, 8 to 16</button>
+          </div>
+          <div class="key"><span><i></i>In tune</span><span><i class="w"></i>Wobbly: between piano notes</span></div>
+          <div class="points">
+            <div class="point"><h3>Far apart down low</h3><p>The bottom rungs are spread out, so you can only play bugle-call tunes down there.</p></div>
+            <div class="point"><h3>Close together up high</h3><p>From rung 8 to rung 16 the notes almost make a full scale. That's why old horn melodies sit way up high!</p></div>
+          </div>
+          <p class="note">Rungs 7, 11, 13 and 14 don't line up with any piano key, so natural horn players fixed them with their hand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAND -->
+  <section class="section section-warm">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The secret weapon</p>
+        <h2>A hand in the bell</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="card tool hand-tool">
+        <div class="prose">
+          <p>Pushing your hand further into the bell makes a note sound lower and a bit muffled. Hand horn players used this to reach the notes missing from the ladder and to fix the wobbly ones.</p>
+          <p>Listen to rung 8, then the same rung with the hand closing in. Horn players today still keep their right hand in the bell because of this tradition.</p>
+        </div>
+        <div class="btn-row" style="flex-direction:column;align-items:flex-start">
+          <button class="btn" id="handOpen" type="button">Open hand</button>
+          <button class="btn btn-outline" id="handClosed" type="button">Hand closing in</button>
+        </div>
+      </div>
+      <div class="card excerpt">
+        <div>
+          <p class="legend">Mozart · Horn Concerto No. 4 · Rondo</p>
+          <h3>Hear the hand at work</h3>
+        </div>
+        <p>Mozart wrote this tune for his friend Leutgeb, who played it on the E♭ crook. Here it is the way horn players read it today, written for horn in F. Most of the notes are open overtones, straight off the ladder. The notes <span class="hand-key">circled in gold</span> aren't on the ladder at all, so the player reaches them with the hand in the bell. Listen for them: they sound a little softer and darker.</p>
+        <div class="staff-wrap">
+          <svg id="mozStaff" role="img" aria-label="Horn part, first eight bars of the Rondo, written for horn in F with B flat and E flat in the key signature. Hand notes, every A and E flat, are circled in gold."></svg>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="mozHand" type="button">Play with the hand</button>
+          <button class="btn btn-outline" id="mozNoHand" type="button">Try it with no hand</button>
+        </div>
+        <p class="note" id="mozStatus" aria-live="polite">Written for horn in F, so it sounds a fifth lower than it looks, in E♭. Notes from the solo horn part, third movement, first eight bars (<a href="https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=1736" target="_blank" rel="noopener">Mutopia Project edition</a>).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Show what you know</p>
+        <h2>Horn hero quiz</h2>
+        <div class="divider"></div>
+        <p class="score" id="score">Score: 0 / 4</p>
+      </div>
+      <div class="quiz" id="quiz"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section-dark cta">
+    <div class="container">
+      <div class="section-head">
+        <h2>See real natural horns</h2>
+        <div class="divider"></div>
+        <p>The drawings here are simplified. Photos of real horns and their crooks are worth a look. Sounds on this page are made by your browser, so they sound buzzier than a real horn.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-light" href="https://en.wikipedia.org/wiki/Natural_horn" target="_blank" rel="noopener">Natural horn photos</a>
+        <a class="btn btn-light" href="https://commons.wikimedia.org/wiki/Category:Natural_horns" target="_blank" rel="noopener">Photo gallery</a>
+        <a class="btn btn-light" href="https://en.wikipedia.org/wiki/Harmonic_series_(music)" target="_blank" rel="noopener">The overtone series</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <section class="section section-warm cta">
+    <div class="container">
+      <h2>Want to play the horn?</h2>
+      <div class="divider"></div>
+      <p>Lessons are available for young players and adults, from first notes to concertos.</p>
+      <div class="btn-row"><a href="../lessons.html" class="btn">See Lessons</a></div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <img src="../images/logo-horizontal-white.png" alt="Swan Music Company" />
+        <ul class="footer-links">
+          <li><a href="../lessons.html">Lessons</a></li>
+          <li><a href="../swantissimo.html">Swantissimo</a></li>
+          <li><a href="../resources.html">Resources</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+          <li><a href="https://www.youtube.com/@swanmusiccompany" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+        </ul>
+      </div>
+      <p class="copyright">&copy; <span data-year>2026</span> Swan Music Company &middot; Rogue Valley, Oregon</p>
+    </div>
+  </footer>
+
+  <script src="../js/site.js"></script>
+  <script>
+(() => {
+  // ---------- data ----------
+  const CROOKS = [
+    { id:"Bb", key:"B♭ (high)", f0:58.27, loops:1, r:46, music:"Mozart, Symphony No. 40 (one horn uses this crook)" },
+    { id:"A",  key:"A",  f0:55.00, loops:1, r:54, music:"Beethoven, Symphony No. 7" },
+    { id:"G",  key:"G",  f0:49.00, loops:1, r:62, music:"Mozart, Symphony No. 40 (the other horn)" },
+    { id:"F",  key:"F",  f0:43.65, loops:1, r:74, music:"Beethoven, Horn Sonata" },
+    { id:"Eb", key:"E♭", f0:38.89, loops:2, r:76, music:"Mozart, Horn Concertos 2, 3 and 4" },
+    { id:"D",  key:"D",  f0:36.71, loops:2, r:82, music:"Haydn, “Horn Signal” Symphony No. 31" },
+    { id:"C",  key:"C (low)",  f0:32.70, loops:3, r:86, music:"Deep, dark, extra-low music" }
+  ];
+  const F_LEN = 12; // feet, horn in F
+  const NAMES = ["C","C♯","D","E♭","E","F","F♯","G","A♭","A","B♭","B"];
+  let crook = CROOKS[3];
+
+  const $ = id => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+
+  // ---------- horn drawing ----------
+  // Modeled on a classic orchestral natural horn: big corpus hoop, a crook loop
+  // joined at the top, leadpipe running right to the mouthpiece, bell flaring down-left.
+  function drawHorn(g, c, showLabel){
+    g.innerHTML = "";
+    const gid = "bellGrad-" + g.id;
+    const lg = el("linearGradient",{id:gid,x1:"0",y1:"0",x2:"1",y2:"1"},el("defs",{},g));
+    el("stop",{offset:"0",style:"stop-color:var(--brass-deep)"},lg);
+    el("stop",{offset:"0.55",style:"stop-color:var(--brass)"},lg);
+    el("stop",{offset:"1",style:"stop-color:var(--brass-light)"},lg);
+
+    // corpus: the main hoop, two windings
+    el("circle",{cx:165,cy:160,r:110,class:"tube","stroke-width":9},g);
+    el("circle",{cx:165,cy:160,r:101,class:"tube","stroke-width":7},g);
+    el("circle",{cx:165,cy:160,r:110,class:"tube-hi","stroke-width":2},g);
+    el("line",{x1:152,y1:330,x2:160,y2:268,class:"stay"},g);
+
+    // bell: narrow throat, then a sharp flare out to a wide, open mouth
+    const rg = el("radialGradient",{id:gid+"-in",cx:"0.42",cy:"0.5",r:"0.6"},g.querySelector("defs"));
+    el("stop",{offset:"0",style:"stop-color:var(--brass-deep)"},rg);
+    el("stop",{offset:"0.7",style:"stop-color:var(--brass)"},rg);
+    el("stop",{offset:"1",style:"stop-color:var(--brass-light)"},rg);
+    // The axis bends from straight down to down-right. The walls widen
+    // exponentially, so the flare gets steeper and steeper toward the rim.
+    const P0 = [61,172], P1 = [61,231], P2 = [200,370];
+    const W0 = 9, W = 79, K = 5, STEPS = 48;
+    const upper = [], lower = [];
+    for (let i=0;i<=STEPS;i++){
+      const t = i/STEPS, u = 1-t;
+      const x = u*u*P0[0] + 2*u*t*P1[0] + t*t*P2[0];
+      const y = u*u*P0[1] + 2*u*t*P1[1] + t*t*P2[1];
+      const tx = 2*u*(P1[0]-P0[0]) + 2*t*(P2[0]-P1[0]);
+      const ty = 2*u*(P1[1]-P0[1]) + 2*t*(P2[1]-P1[1]);
+      const len = Math.hypot(tx, ty), nx = ty/len, ny = -tx/len;
+      const w = W0 + (W - W0) * (Math.exp(K*t) - 1) / (Math.exp(K) - 1);
+      upper.push(`${(x + nx*w).toFixed(1)} ${(y + ny*w).toFixed(1)}`);
+      lower.push(`${(x - nx*w).toFixed(1)} ${(y - ny*w).toFixed(1)}`);
+    }
+    el("path",{class:"bell-body",fill:`url(#${gid})`,d:`M${upper.join(" L")} L${lower.reverse().join(" L")} Z`},g);
+    el("ellipse",{class:"bell-mouth",fill:`url(#${gid}-in)`,cx:P2[0],cy:P2[1],rx:W,ry:20,transform:`rotate(-45 ${P2[0]} ${P2[1]})`},g);
+
+    // crook: hangs from the leadpipe, bigger and more loops for lower keys
+    const ccx = 250, ccy = 48 + c.r;
+    const cg = el("g",{class:"crook"},g);
+    for (let i=0;i<c.loops;i++){
+      el("circle",{cx:ccx, cy:ccy, r:c.r - i*8, class:"tube","stroke-width":6},cg);
+    }
+
+    // leadpipe, tenon joint and mouthpiece
+    el("path",{class:"tube","stroke-width":6,d:"M160 49 L 372 49"},g);
+    el("rect",{class:"joint",x:176,y:42,width:10,height:14,rx:2},g);
+    el("path",{class:"bell","stroke-width":1,d:"M372 45 L 394 38 L 394 60 L 372 53 Z"},g);
+
+    if (showLabel){
+      const callout = (tx, ty, anchor, lx1, ly1, lx2, ly2, text, cls) => {
+        el("line",{x1:lx1,y1:ly1,x2:lx2,y2:ly2,class:"callout"},g);
+        el("circle",{cx:lx2,cy:ly2,r:2.5,class:"callout-dot"},g);
+        el("text",{x:tx,y:ty,"text-anchor":anchor,class:cls || "label-svg"},g).textContent = text;
+      };
+      const d = c.r * 0.707;
+      callout(20, 20, "start", 110, 26, 180, 42, "tenon and socket joint");
+      callout(388, 100, "middle", 386, 86, 386, 62, "mouthpiece");
+      callout(332, ccy + d + 30, "start", 340, ccy + d + 14, ccx + d + 3, ccy + d + 3, c.key + " crook", "crook-tag");
+      callout(118, 165, "start", 114, 160, 70, 160, "corpus");
+      callout(300, 420, "start", 296, 410, 222, 375, "bell");
+    }
+  }
+
+  // ---------- crook swapper ----------
+  function compare(ft){
+    if (ft < 10) return "About as long as a sofa and a half.";
+    if (ft < 12.5) return "About as long as two grown-ups lying head to toe.";
+    if (ft < 15) return "Almost as long as a car!";
+    return "Longer than a car! That's a lot of tube to fill with air.";
+  }
+  function selectCrook(c){
+    crook = c;
+    document.querySelectorAll("#crookButtons .chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === c.id));
+    drawHorn($("machineHorn"), c, true);
+    const len = F_LEN * 43.65 / c.f0;
+    $("cKey").textContent = c.key;
+    $("cLen").textContent = (Math.round(len*2)/2) + " ft";
+    $("cCompare").textContent = compare(len);
+    $("cMusic").textContent = c.music;
+    $("lKey").textContent = c.key;
+    buildLadder();
+    updateRopes();
+  }
+  CROOKS.forEach(c => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.dataset.id = c.id; b.textContent = c.key;
+    b.addEventListener("click", () => selectCrook(c));
+    $("crookButtons").appendChild(b);
+  });
+
+  // ---------- notes ----------
+  function noteInfo(freq){
+    const m = 69 + 12*Math.log2(freq/440);
+    const r = Math.round(m);
+    return { name: NAMES[((r%12)+12)%12] + (Math.floor(r/12)-1) };
+  }
+  const WOBBLY = new Set([7,11,13,14]);
+
+  // ---------- ladder ----------
+  const rungEls = [];
+  function buildLadder(){
+    const L = $("ladder"); L.innerHTML = ""; rungEls.length = 0;
+    const max = Math.log2(16);
+    for (let n=1;n<=16;n++){
+      const info = noteInfo(crook.f0 * n);
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "rung" + (WOBBLY.has(n) ? " wobbly" : "");
+      // position to scale: log2(n) mapped onto 4%..96%
+      b.style.bottom = (4 + 92 * Math.log2(n)/max) + "%";
+      const label = WOBBLY.has(n) ? `${info.name}-ish` : info.name;
+      b.innerHTML = `<span class="num">${n}</span><span class="nm">${label}</span>`;
+      b.setAttribute("aria-label", `Overtone ${n}, ${label}${WOBBLY.has(n) ? ", out of tune" : ""}`);
+      b.addEventListener("click", () => playRung(n));
+      L.appendChild(b); rungEls[n] = b;
+    }
+  }
+
+  // ---------- jump ropes ----------
+  // Standing waves: k humps, wiggling k times as fast as the single hump.
+  const ropes = [];
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function setRope(r, s){
+    const x0 = 10, x1 = 510, y = 40, amp = 28;
+    let d = `M${x0} ${y}`;
+    for (let i=1;i<=100;i++){ const x = x0 + (x1-x0)*i/100; d += ` L${x.toFixed(1)} ${(y - amp*s*Math.sin(Math.PI*r.k*i/100)).toFixed(1)}`; }
+    r.path.setAttribute("d", d);
+  }
+  // What each overtone is, counted from the fundamental
+  const ROPE_INTERVALS = { 1:"Fundamental", 2:"Octave", 3:"Fifth", 4:"Octave (2 up)", 5:"Major third" };
+  [1,2,3,4,5].forEach(k => {
+    const row = document.createElement("div"); row.className = "rope-row";
+    const left = document.createElement("div"); left.className = "rope-left";
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "btn btn-light rope-btn"; b.id = `wiggle${k}`;
+    b.textContent = k === 1 ? "Wiggle 1 hump" : `Wiggle ${k} humps`;
+    const info = document.createElement("span"); info.className = "rope-info";
+    left.append(b, info);
+    const svg = el("svg",{viewBox:"0 0 520 80",role:"img","aria-label":`Jump rope making ${k} hump${k>1?"s":""}`});
+    const path = el("path",{},svg);
+    el("circle",{cx:10,cy:40,r:7,class:"hand"},svg);
+    el("circle",{cx:510,cy:40,r:7,class:"hand"},svg);
+    row.append(left, svg); $("ropes").appendChild(row);
+    const r = { k, path, b, info, token:0 };
+    ropes[k] = r; setRope(r, 1);
+    b.addEventListener("click", () => wiggle([k]));
+  });
+  function updateRopes(){
+    for (let k=1;k<=5;k++) ropes[k].info.textContent = `${ROPE_INTERVALS[k]} · ${noteInfo(hz(k)).name}`;
+  }
+  function wiggle(ks){
+    ks.forEach(k => tone(hz(k), 0, 2.4));
+    if (reduceMotion) return;
+    const start = performance.now(), dur = 3000;
+    ks.forEach(k => {
+      const r = ropes[k], token = ++r.token;
+      r.b.classList.add("active");
+      const frame = now => {
+        if (token !== r.token) return;
+        const t = (now - start) / 1000;
+        if (now - start >= dur){ setRope(r, 1); r.b.classList.remove("active"); return; }
+        setRope(r, Math.cos(2*Math.PI*0.9*k*t));
+        requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    });
+  }
+  $("wiggleAll").addEventListener("click", () => wiggle([1,2,3,4,5]));
+
+  // ---------- sound ----------
+  let ctx;
+  function audio(){ if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); return ctx; }
+  function tone(freq, start, dur, opts = {}){
+    const a = audio();
+    const t = a.currentTime + start;
+    const o = a.createOscillator(), o2 = a.createOscillator();
+    const f = a.createBiquadFilter(), g = a.createGain();
+    o.type = "sawtooth"; o2.type = "triangle";
+    o.frequency.value = freq; o2.frequency.value = freq;
+    if (opts.bend){ o.frequency.linearRampToValueAtTime(freq*opts.bend, t+dur*0.6); o2.frequency.linearRampToValueAtTime(freq*opts.bend, t+dur*0.6); }
+    f.type = "lowpass"; f.Q.value = 1.2;
+    f.frequency.setValueAtTime(Math.min(freq*(opts.bright || (opts.muffled ? 1.6 : 4)), 4000), t);
+    if (opts.muffled) f.frequency.linearRampToValueAtTime(Math.min(freq*1.1, 4000), t+dur*0.6);
+    const vol = opts.vol || 0.22, attack = Math.min(0.06, dur*0.4);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t+attack);
+    g.gain.setValueAtTime(vol, t+Math.max(attack, dur-0.08));
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    o.connect(f); o2.connect(f); f.connect(g); g.connect(a.destination);
+    o.start(t); o2.start(t); o.stop(t+dur+0.05); o2.stop(t+dur+0.05);
+  }
+  const hz = n => crook.f0 * n;
+  function flash(n, delay, dur){
+    setTimeout(() => { rungEls[n] && rungEls[n].classList.add("playing"); }, delay*1000);
+    setTimeout(() => { rungEls[n] && rungEls[n].classList.remove("playing"); }, (delay+dur)*1000);
+  }
+  function playRung(n){ tone(hz(n), 0, 0.8); flash(n, 0, 0.8); }
+  function sequence(ns, step){ ns.forEach((n,i) => { tone(hz(n), i*step, step*0.95); flash(n, i*step, step*0.95); }); }
+
+  $("climb").addEventListener("click", () => sequence([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], 0.32));
+  $("topScale").addEventListener("click", () => sequence([8,9,10,11,12,13,14,15,16], 0.38));
+  $("playCall").addEventListener("click", () => {
+    // a simple hunting call using only overtones 3, 4, 5, 6, 8
+    const call = [[3,.25],[4,.25],[5,.25],[6,.5],[5,.25],[6,.25],[8,.75],[6,.25],[5,.25],[4,.5],[3,.6]];
+    let t = 0; call.forEach(([n,d]) => { tone(hz(n), t, d*0.95); flash(n, t, d*0.95); t += d; });
+  });
+  $("handOpen").addEventListener("click", () => { tone(hz(8), 0, 1.2); flash(8,0,1.2); });
+  $("handClosed").addEventListener("click", () => { tone(hz(8), 0, 1.4, {bend: Math.pow(2,-1/12), muffled:true}); flash(8,0,1.4); });
+
+  // ---------- quiz ----------
+  const QUIZ = [
+    { q:"What did natural horn players swap in and out to change key?", o:["Mouthpieces","Crooks","Bells"], a:1, why:"Crooks are extra loops of tube. Longer crook, lower key." },
+    { q:"If you put in a LONGER crook, the notes get…", o:["Higher","Lower","Louder"], a:1, why:"More tube means slower air waves, which means lower notes." },
+    { q:"Why did old horn melodies sit way up high?", o:["Up high, the overtones are close together","High notes are easier to play","Composers didn't like low notes"], a:0, why:"From rung 8 to 16 the overtones are close enough to make a scale." },
+    { q:"What invention around 1815 made crook-swapping mostly unnecessary?", o:["The metronome","The piano","Valves"], a:2, why:"Valves add extra tubing instantly, like a crook at the push of a button." }
+  ];
+  let score = 0;
+  QUIZ.forEach((item, qi) => {
+    const box = document.createElement("div"); box.className = "card q";
+    box.innerHTML = `<h3>${item.q}</h3><div class="opts"></div><div class="fb" aria-live="polite"></div>`;
+    const opts = box.querySelector(".opts"), fb = box.querySelector(".fb");
+    let done = false;
+    item.o.forEach((txt, oi) => {
+      const b = document.createElement("button"); b.type = "button"; b.id = `q${qi}o${oi}`; b.textContent = txt;
+      b.addEventListener("click", () => {
+        if (done) return;
+        if (oi === item.a){
+          done = true; b.classList.add("right"); fb.textContent = "Yes! " + item.why;
+          score++; $("score").textContent = `Score: ${score} / ${QUIZ.length}` + (score === QUIZ.length ? " · Horn hero!" : "");
+          try { tone(crook.f0*8, 0, .15); tone(crook.f0*10, .15, .15); tone(crook.f0*12, .3, .35); } catch(e){}
+        } else { b.classList.add("wrong"); fb.textContent = "Not quite. Try again!"; }
+      });
+      opts.appendChild(b);
+    });
+    $("quiz").appendChild(box);
+  });
+
+  // ---------- Mozart excerpt ----------
+  // Horn Concerto No. 4, K. 495, Rondo, bars 0-8 of the solo part, written for
+  // modern horn in F (sounds a fifth lower), key signature B♭ and E♭, so every
+  // B and E below is flat. It sounds in E♭, played on the E♭ crook. Lengths in eighth notes.
+  const EB = CROOKS[4].f0;
+  const WRITTEN = { B3:58, F4:65, A4:69, B4:70, C5:72, D5:74, E5:75, F5:77 };
+  const OPEN = { 58:4, 65:6, 70:8, 72:9, 74:10, 77:12 }; // written pitch → overtone
+  const FLAT_IN_KEY = { B:"B♭", E:"E♭" };
+  const B6 = () => Array(6).fill(["B4",1]);
+  const MOZART = [
+    [["F4",1]],
+    B6(),
+    [["A4",1],["C5",1],["F5",1],["F5",1],["E5",1],["C5",1]],
+    [["B4",1],["B4",1],["B4",1],["B4",1],["A4",1],["B4",1]],
+    [["C5",1],["F4",1],["F4",1],["F4",2],["F4",1]],
+    B6(),
+    [["A4",1],["C5",1],["F5",1],["F5",1],["E5",1],["C5",1]],
+    [["D5",1],["F5",1],["B4",1],["D5",0,"grace"],["C5",1],["B4",1],["C5",1]],
+    [["B4",1],["B3",1],["B3",1],["B3",2],[null,1]]
+  ];
+  // Open notes are pure overtones. A is overtone 8 stopped down a half step;
+  // E♭ is the sharp 11th overtone pulled down to a true E♭ by the hand.
+  function mozPitch(w, hand){
+    const m = WRITTEN[w];
+    if (OPEN[m]) return { f: EB*OPEN[m], hand:false };
+    if (w === "A4") return hand ? { f: EB*8*Math.pow(2,-1/12), hand:true } : { f: EB*8, hand:false };
+    return hand ? { f: EB*8*4/3, hand:true } : { f: EB*11, hand:false };
+  }
+  // ---------- staff drawing (written pitch, treble clef, 6/8) ----------
+  const mozEls = [];
+  const SW = 760, GAP = 12, HALF = GAP/2, STEM = 34;
+  const LETTER = { C:0, D:1, E:2, F:3, G:4, A:5, B:6 };
+  const stepOf = w => LETTER[w[0]] + 7*Number(w[1]) - 30; // 0 = bottom line (E4)
+  const SYSTEMS = [[0,1,2],[3,4,5],[6,7,8]];
+  const slotsOf = ([w, len, kind]) => kind === "grace" ? 0.6 : (len === 2 ? 1.5 : 1);
+  function flagPath(x, y, up, s = 1){
+    const d = up ? 1 : -1;
+    return `M${x} ${y} q ${2*s} ${10*d*s} ${10*s} ${14*d*s} q ${4*s} ${5*d*s} ${0} ${13*d*s}`;
+  }
+  function drawBar(svg, items, top, bottom){
+    const yOf = p => bottom - p*HALF;
+    let acc = 0;
+    items.forEach(it => { it.beat = Math.floor(acc/3); acc += it.n[1]; });
+    // eighth notes in the same dotted-quarter beat share a beam
+    const groups = {};
+    items.forEach(it => { const [w,len,kind] = it.n; if (w && len === 1 && kind !== "grace") (groups[it.beat] = groups[it.beat] || []).push(it); });
+    items.forEach(it => {
+      const [w, len, kind] = it.n;
+      const g = el("g",{class:"mz-note"},svg);
+      el("rect",{class:"hl",x:it.x-13,y:top-18,width:26,height:4*GAP+58,rx:4},g);
+      mozEls.push(g);
+      if (!w){ // eighth rest
+        el("circle",{class:"rest-dot",cx:it.x-3,cy:top+GAP*1.6,r:3},g);
+        el("path",{class:"rest-mark",d:`M${it.x-5} ${top+GAP*1.7} q 5 3 9 -1 L ${it.x-1} ${top+GAP*3.4}`},g);
+        return;
+      }
+      const p = stepOf(w), y = yOf(p), hand = mozPitch(w, true).hand;
+      if (hand) g.classList.add("hand");
+      const sc = kind === "grace" ? 0.65 : 1;
+      el("circle",{class:"halo",cx:it.x,cy:y,r:11},g);
+      for (let lp = -2; lp >= p; lp -= 2) el("line",{class:"ledger",x1:it.x-10,x2:it.x+10,y1:yOf(lp),y2:yOf(lp)},g);
+      el("ellipse",{class:"head",cx:it.x,cy:y,rx:6.6*sc,ry:4.8*sc,transform:`rotate(-20 ${it.x} ${y})`},g);
+      if (kind !== "grace") el("text",{class:"ltr",x:it.x,y:bottom+34},g).textContent = FLAT_IN_KEY[w[0]] || w[0];
+      if (kind === "grace"){
+        const sx = it.x + 4.2, end = y - 24;
+        el("line",{class:"stem",x1:sx,x2:sx,y1:y,y2:end},g);
+        el("path",{class:"flag",d:flagPath(sx, end, true, 0.6)},g);
+        el("line",{class:"stem",x1:sx-6,x2:sx+7,y1:end+14,y2:end+4},g);
+        return;
+      }
+      it.y = y;
+      const grp = groups[it.beat];
+      if (len === 1 && grp && grp.length > 1) return; // stems drawn with the beam
+      const up = p < 4, sx = up ? it.x+6 : it.x-6, end = up ? y-STEM : y+STEM;
+      el("line",{class:"stem",x1:sx,x2:sx,y1:y,y2:end},g);
+      if (len === 1) el("path",{class:"flag",d:flagPath(sx, end, up)},g);
+    });
+    Object.values(groups).forEach(grp => {
+      if (grp.length < 2) return;
+      const ps = grp.map(it => stepOf(it.n[0]));
+      const up = (4 - Math.min(...ps)) > (Math.max(...ps) - 4);
+      const ys = grp.map(it => it.y);
+      const by = up ? Math.min(...ys) - STEM : Math.max(...ys) + STEM;
+      const xs = grp.map(it => up ? it.x+6 : it.x-6);
+      grp.forEach((it, i) => el("line",{class:"stem",x1:xs[i],x2:xs[i],y1:it.y,y2:by},svg));
+      el("rect",{class:"beam",x:xs[0]-0.7,y:up ? by : by-5,width:xs[xs.length-1]-xs[0]+1.4,height:5},svg);
+    });
+  }
+  (function renderStaff(){
+    const svg = $("mozStaff");
+    svg.setAttribute("viewBox", `0 0 ${SW} ${SYSTEMS.length*140 + 10}`);
+    SYSTEMS.forEach((bars, si) => {
+      const top = 34 + si*140, bottom = top + 4*GAP;
+      for (let l=0;l<5;l++) el("line",{class:"staff-line",x1:10,x2:SW-10,y1:top+l*GAP,y2:top+l*GAP},svg);
+      el("line",{class:"bar-line",x1:10,x2:10,y1:top,y2:bottom},svg);
+      el("text",{class:"clef",x:14,y:bottom+11,"font-size":66},svg).textContent = "\u{1D11E}";
+      let x = 58;
+      // key signature: B♭ on the middle line, E♭ in the top space
+      [[4, x+4], [7, x+16]].forEach(([p, fx]) => {
+        const fy = bottom - p*HALF;
+        el("path",{class:"flat",d:`M${fx} ${fy-15} L${fx} ${fy+5} C ${fx+10} ${fy} ${fx+9} ${fy-6} ${fx} ${fy-2}`},svg);
+      });
+      x += 28;
+      if (si === 0){
+        el("text",{class:"timesig",x:x+10,y:top+2*GAP-3},svg).textContent = "6";
+        el("text",{class:"timesig",x:x+10,y:top+4*GAP-3},svg).textContent = "8";
+        x += 26;
+      }
+      const PAD = 14;
+      const total = bars.reduce((s, b) => s + MOZART[b].reduce((a, n) => a + slotsOf(n), 0), 0);
+      const unit = (SW - 10 - x - bars.length*PAD*2) / total;
+      bars.forEach(bi => {
+        x += PAD;
+        const items = MOZART[bi].map(n => { const w = slotsOf(n)*unit, it = { n, x: x + w*0.4 }; x += w; return it; });
+        x += PAD;
+        el("line",{class:"bar-line",x1:x,x2:x,y1:top,y2:bottom},svg);
+        drawBar(svg, items, top, bottom);
+      });
+    });
+  })();
+  let mozBusy = false;
+  function playMozart(hand){
+    if (mozBusy) return;
+    mozBusy = true;
+    const EIGHTH = 0.2, GRACE = 0.07;
+    let t = 0.05, i = 0, steal = 0;
+    MOZART.flat().forEach(([w, len, kind]) => {
+      const elx = mozEls[i++];
+      if (kind === "grace"){
+        const p = mozPitch(w, hand);
+        tone(p.f, t, GRACE*1.2, { vol:0.16 });
+        flashEl(elx, t, GRACE); t += GRACE; steal = GRACE; return;
+      }
+      const span = len*EIGHTH - steal; steal = 0;
+      if (w){
+        const p = mozPitch(w, hand);
+        tone(p.f, t, span*0.85, p.hand ? { bright:1.7, vol:0.17 } : {});
+        flashEl(elx, t, span*0.85);
+      }
+      t += span;
+    });
+    setTimeout(() => { mozBusy = false; }, t*1000);
+    $("mozStatus").textContent = hand
+      ? "With the hand: every note lands where Mozart wrote it. The highlighted notes are a little covered, which is the sound of hand horn."
+      : "No hand: every A comes out as a B♭ (a wrong note!), and the E♭ comes out sharp, almost an E. That's why players needed the hand.";
+  }
+  function flashEl(e, delay, dur){
+    setTimeout(() => e.classList.add("playing"), delay*1000);
+    setTimeout(() => e.classList.remove("playing"), (delay+dur)*1000);
+  }
+  $("mozHand").addEventListener("click", () => playMozart(true));
+  $("mozNoHand").addEventListener("click", () => playMozart(false));
+
+  drawHorn($("heroHorn"), CROOKS[3], true);
+  selectCrook(crook);
+})();
+</script>
+</body>
+</html>
